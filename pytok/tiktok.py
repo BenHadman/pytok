@@ -90,6 +90,7 @@ class PyTok:
             log_captcha_solves: Optional[bool] = False,
             num_sessions: int = 1,
             user_data_dir: Optional[str] = None,
+            browser_executable_path: Optional[str] = None,
             browser_args: Optional[list] = None,
             page_load_timeout: Optional[int] = 30,
             account=None,
@@ -116,6 +117,10 @@ class PyTok:
             If not provided, uses a fresh profile each session. Set to your Chrome
             profile path (e.g., ~/.config/google-chrome) to reuse cookies/history.
             Note: Don't use a profile that's open in another Chrome instance.
+
+        * browser_executable_path: Path to a Chrome or Chromium executable. When
+            omitted, zendriver auto-detects one; set `$PYTOK_BROWSER_EXECUTABLE`
+            to supply a container-specific default.
 
         * browser_args: Additional Chrome command-line arguments, optional
             Merged with default stealth args. Pass empty list [] to disable defaults.
@@ -189,6 +194,9 @@ class PyTok:
         self._log_captcha_solves = log_captcha_solves
         self._num_sessions = num_sessions
         self._user_data_dir = user_data_dir
+        self._browser_executable_path = browser_executable_path or os.environ.get(
+            "PYTOK_BROWSER_EXECUTABLE"
+        )
         self._page_load_timeout = page_load_timeout
         # Merge browser args: use defaults unless explicitly disabled with empty list
         if browser_args is None:
@@ -415,6 +423,7 @@ class PyTok:
         self._zendriver_browser = await zd.start(
             headless=self._headless,
             user_data_dir=self._user_data_dir,
+            browser_executable_path=self._browser_executable_path,
             browser_args=self._browser_args if self._browser_args else None,
         )
 
