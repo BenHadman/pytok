@@ -3,9 +3,15 @@ import base64
 import random
 from urllib.parse import urlparse
 
-import cv2
 import numpy as np
 import requests
+
+
+def _opencv():
+    """Load OpenCV only when an image captcha needs to be processed."""
+    import cv2
+
+    return cv2
 
 
 class CaptchaSolver:
@@ -229,6 +235,7 @@ class PuzzleSolver:
         self.piece = base64piece
 
     def get_position(self):
+        cv2 = _opencv()
         puzzle = self._background_preprocessing()
         piece = self._piece_preprocessing()
         matched = cv2.matchTemplate(
@@ -250,6 +257,7 @@ class PuzzleSolver:
         return template
 
     def _sobel_operator(self, img):
+        cv2 = _opencv()
         scale = 1
         delta = 0
         ddepth = cv2.CV_16S
@@ -283,6 +291,7 @@ class PuzzleSolver:
         return grad
 
     def _img_to_grayscale(self, img):
+        cv2 = _opencv()
         return cv2.imdecode(
             self._string_to_image(img),
             cv2.IMREAD_COLOR
@@ -296,6 +305,7 @@ class PuzzleSolver:
 
 
 def _get_images_and_edges(b64_puzzle, b64_piece, resolution=300):
+    cv2 = _opencv()
     puzzle = cv2.imdecode(np.frombuffer(base64.b64decode(b64_puzzle), dtype="uint8"), cv2.IMREAD_COLOR)
     piece = cv2.imdecode(np.frombuffer(base64.b64decode(b64_piece), dtype="uint8"), cv2.IMREAD_COLOR)
 

@@ -68,6 +68,18 @@ async for video in sound.videos(count=100):
     ...
 ```
 
+### Browser executable
+
+PyTok uses a Chrome- or Chromium-compatible browser through Zendriver. It
+auto-detects an installed browser by default. In a container or non-standard
+installation, point it at the executable explicitly:
+
+```bash
+export PYTOK_BROWSER_EXECUTABLE=/usr/bin/chromium
+```
+
+Alternatively, pass `browser_executable_path="/path/to/chromium"` to `PyTok`.
+
 Please note pulling data from TikTok takes a while! We recommend leaving the scripts running on a server for a while for them to finish downloading everything. Feel free to play around with the delay constants to either speed up the process or avoid TikTok rate limiting, like so: `PyTok(request_delay=10)`
 
 ## Accounts, login, and persistent sessions
@@ -208,4 +220,3 @@ The user dataframe will contain the following columns:
 |`num_videos`| How many videos the user has made |
 |`num_likes`| How many total likes the user has had |
 |`createtime`| When the user account was made. This is derived from the `id` field, and can occasionally be incorrect with a very low unix epoch such as 1971 |
-
